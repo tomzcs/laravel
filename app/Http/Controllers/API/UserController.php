@@ -3,6 +3,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 class UserController extends Controller
@@ -18,10 +19,14 @@ public $successStatus = 200;
         if(Auth::attempt(['email' => request('email'), 'password' => request('password')])){
             $user = Auth::user();
             $success['token'] =  $user->createToken('MyApp')-> accessToken;
-            return response()->json(['success' => $success], $this-> successStatus);
+            return response()->json([
+                                      'status' => true,
+                                      'message' => 'login success',
+                                      'data' => $success
+                                    ], $this-> successStatus);
         }
         else{
-            return response()->json(['error'=>'Unauthorised'], 401);
+            return response()->json(['status' => false,'message'=>'Unauthorised'], 401);
         }
     }
 /**
@@ -55,6 +60,20 @@ return response()->json(['success'=>$success], $this-> successStatus);
     public function details()
     {
         $user = Auth::user();
-        return response()->json(['success' => $user], $this-> successStatus);
+        return response()->json([
+                                  'status' => true,
+                                  'message' => 'success',
+                                  'data' => $user
+                                ], $this-> successStatus);
+    }
+
+
+    public function latlong()
+    {
+      return response()->json([
+                                'status' => true,
+                                'message' => 'success',
+                                'data' => DB::table('latlongs')->get()
+                              ], $this-> successStatus);
     }
 }
