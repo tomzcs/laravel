@@ -14,19 +14,14 @@ public $successStatus = 200;
      * @return \Illuminate\Http\Response
      */
     public function login(){
+
         if(Auth::attempt(['email' => request('email'), 'password' => request('password')])){
             $user = Auth::user();
             $success['token'] =  $user->createToken('MyApp')-> accessToken;
-            return response()
-                            ->json(['success' => $success], $this-> successStatus)
-                            ->header('Access-Control-Allow-Origin', 'http://210.1.62.170:81')
-                            ->header('Access-Control-Allow-Credentials', 'true');
+            return response()->json(['success' => $success], $this-> successStatus);
         }
         else{
-            return response()
-                            ->json(['error'=>'Unauthorised'], 401)
-                            ->header('Access-Control-Allow-Origin', 'http://210.1.62.170:81')
-                            ->header('Access-Control-Allow-Credentials', 'true');
+            return response()->json(['error'=>'Unauthorised'], 401);
         }
     }
 /**
