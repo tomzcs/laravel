@@ -17,17 +17,12 @@ header('Access-Control-Allow-Credentials : true');
 header('Access-Control-Allow-Methods : GET,PUT,POST,DELETE,PATCH,OPTIONS');
 header('Access-Control-Allow-Headers : Origin, X-Requested-With, Content-Type, Accept, Authorization');
 
-
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-
 Route::post('login', 'API\UserController@login');
 Route::post('register', 'API\UserController@register');
 
 Route::group(['middleware' => 'auth:api'], function(){
   Route::post('details', 'API\UserController@details');
   Route::post('latlong', 'API\UserController@latlong');
+  Route::post('insert_img', 'API\UserController@InsertImg');
 
 });
