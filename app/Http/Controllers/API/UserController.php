@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Validator;
 class UserController extends Controller
 {
@@ -68,24 +69,57 @@ public $successStatus = 200;
     //get image Base64
     public function InsertImg(Request $request)
     {
-      $file_data = $request->input('files');
-      if ($file_data) {
-        $file_name = 'image_'.time().'.png'; //generating unique file name;
-        @list($type, $file_data) = explode(';', $file_data);
-        @list(, $file_data) = explode(',', $file_data);
-        if($file_data!=""){ // storing image in storage/app/public Folder
-               \Storage::disk('public')->put($file_name,base64_decode($file_data));
-         }
-        $data = [
-          'name' => $file_name,
-          'path' =>  url('storage/'.$file_name)
-        ];
-        return response()->json(['status' => true,'message' => 'success','data' =>$data], $this-> successStatus);
-      }else{
-        return response()->json(['status' => false,'message' => 'The files field is required.'], 401);
+      $validator = Validator::make($request->all(), [
+          'files' => 'required',
+          'userId' => 'required'
+      ]);
+      if ($validator->fails()) {
+          return response()->json(['error'=>$validator->errors()], 401);
       }
 
+      $file_data = $request->input('files');
+      $userId = $request->input('userId');
+      $imgpf = DB::table('imgpfs')->where('userId', $userId)->get();
+      // dd($imgpf);
+      // Storage::delete('public/'.$imgpf->imgName);
 
+      $file_name = 'image_'.time().'.png'; //generating unique file name;
+      @list($type, $file_data) = explode(';', $file_data);
+      @list(, $file_data) = explode(',', $file_data);
+      if($file_data!=""){ // storing image in storage/app/public Folder
+             Storage::disk('public')->put($file_name,base64_decode($file_data));
+       }
+      $data = [
+        'name' => $file_name,
+        'path' =>  url('storage/'.$file_name)
+      ];
+
+      if ($imgpf->isEmpty()) {
+        // insert
+        DB::table('imgpfs')->insert(['userId' => $userId, 'imgName' => $file_name]);
+      }else{
+        //update
+        Storage::disk('public')->delete($imgpf[0]->imgName);
+        DB::table('imgpfs')
+                    ->where('userId', $userId)
+                    ->update(['imgName' => $file_name]);
+      }
+
+      return response()->json(['status' => true,'message' => 'success','data' =>$data], $this-> successStatus);
+
+
+
+
+
+
+
+
+
+    }
+
+    public function Air($id)
+    {
+      return response()->json(['status' => true,'message' => 'success','data' => DB::table('airs')->where('userId', $id)->get()],$this-> successStatus);
     }
 
 
