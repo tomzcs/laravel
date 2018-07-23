@@ -3,10 +3,12 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
+use App\Role;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Validator;
+use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
 public $successStatus = 200;
@@ -43,8 +45,10 @@ public $successStatus = 200;
             return response()->json(['error'=>$validator->errors()], 401);
         }
         $input = $request->all();
-        $input['password'] = bcrypt($input['password']);
+        $input['password'] = Hash::make($input['password']);
         $user = User::create($input);
+        $user->roles()->attach(Role::where('name', 'employee')->first());
+
         $success['token'] =  $user->createToken('MyApp')-> accessToken;
         $success['name'] =  $user->name;
         return response()->json(['success'=>$success], $this-> successStatus);
@@ -107,19 +111,16 @@ public $successStatus = 200;
 
       return response()->json(['status' => true,'message' => 'success','data' =>$data], $this-> successStatus);
 
-
-
-
-
-
-
-
-
     }
 
     public function Air($id)
     {
       return response()->json(['status' => true,'message' => 'success','data' => DB::table('airs')->where('userId', $id)->get()],$this-> successStatus);
+    }
+
+    public function InsertVideo(Request $request)
+    {
+      dd($request);
     }
 
 
