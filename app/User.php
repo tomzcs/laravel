@@ -3,6 +3,7 @@
 namespace App;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -37,11 +38,9 @@ class User extends Authenticatable
     public function authorizeRoles($roles)
     {
       if (is_array($roles)) {
-          return $this->hasAnyRole($roles) ||
-                 abort(401, 'This action is unauthorized.');
+          return $this->hasAnyRole($roles);
       }
-      return $this->hasRole($roles) ||
-             abort(401, 'This action is unauthorized.');
+      return $this->hasRole($roles);
     }
     /**
     * Check multiple roles
@@ -58,5 +57,19 @@ class User extends Authenticatable
     public function hasRole($role)
     {
       return null !== $this->roles()->where('name', $role)->first();
+    }
+
+    /**
+    * Get user role
+    * @param string $id
+    */
+    public function getRoles($id)
+    {
+      $data = DB::table('role_user')->where('user_id', $id)->join('roles', 'roles.id', '=', 'role_user.role_id')->get();
+      $arr = [];
+      foreach ($data as $key => $value) {
+        array_push($arr, $value->name);
+      }
+      return $arr;
     }
 }

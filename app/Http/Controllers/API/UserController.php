@@ -17,16 +17,31 @@ public $successStatus = 200;
      *
      * @return \Illuminate\Http\Response
      */
-    public function login(){
+    public function login(Request $request){
+      // return response()->json(['status' => false,'message' => 'Unauthorised' , 'data' => $request->all()], 200);
 
-        if(Auth::attempt(['email' => request('email'), 'password' => request('password')])){
-            $user = Auth::user();
-            $success['token'] =  $user->createToken('MyApp')-> accessToken;
-            return response()->json(['status' => true,'message' => 'login success','data' => $success], $this-> successStatus);
-        }
-        else{
-            return response()->json(['status' => false,'message'=>'Unauthorised'], 401);
-        }
+      $validator = Validator::make($request->all(), [
+          'email' => 'required|email',
+          'password' => 'required'
+      ]);
+      if ($validator->fails()) {
+          return response()->json(['error'=>$validator->errors()], 401);
+      }
+
+      if(Auth::attempt(['email' => request('email'), 'password' => request('password')])){
+          $user = Auth::user();
+          $success = [
+            'id'    => $user->id,
+            'name'  => $user->name,
+            'email' => $user->email,
+            'img'   => DB::table('imgpfs')->where('userId', $user->id)->value('imgName'),
+            'token' => $user->createToken('MyApp')-> accessToken
+          ];
+          return response()->json(['status' => true,'message' => 'login success','data' => $success], $this-> successStatus);
+      }
+      else{
+          return response()->json(['status' => false,'message' => 'Unauthorised'], 401);
+      }
     }
 /**
      * Register api
@@ -120,7 +135,15 @@ public $successStatus = 200;
 
     public function InsertVideo(Request $request)
     {
-      dd($request);
+      // print_r($_FILES);die();
+      // $parm = $request->all();
+      // $video = $parm['video'];
+      // $input = $video->getClientOriginalName();
+      // dd($input);
+      $destinationPath = public_path().'\uploads';
+      $video->move($destinationPath, $_FILES['file']['tmp_name']);
+      return response()->json(['status' => true,'message' => 'success','data' => $destinationPath],$this-> successStatus);
+
     }
 
 
