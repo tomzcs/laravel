@@ -40,6 +40,22 @@ class HomeController extends Controller
         return view('home',['title' => 'manager', 'roles' => $roles, 'users' => $users]);
     }
 
+    public function datatable(Request $request)
+    {
+      $user = Auth::user();
+      $roles = $request->user()->getRoles($user->id);
+      $users = [];
+      foreach (User::all() as $key => $value) {
+        $arr['id'] = $value['id'];
+        $arr['name'] = $value['name'];
+        $arr['email'] = $value['email'];
+        $arr['role'] = $request->user()->getRoles($value['id']);
+        array_push($users, $arr);
+      }
+      return Datatables::of($users)->make(true);
+
+    }
+
     public function video(Request $request)
     {
 
