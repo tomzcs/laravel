@@ -3,7 +3,7 @@ home = {
     $('#users-table').DataTable({
       processing: true,
       serverSide: true,
-      pageLength: 1,
+      pageLength: 10,
       ajax: {
         "url": 'http://192.168.88.15/user_data',
         "type": "POST",
@@ -29,13 +29,13 @@ home = {
             for (a of res.role) {
               switch (a) {
                 case 'manager':
-                  string += '<span class="badge badge-danger">' + a + '</span>';
+                  string += '<h5><span class="badge badge-danger">' + a + '</span></h5>';
                   break;
                 case 'mobile':
-                  string += '<span class="badge badge-success">' + a + '</span>';
+                  string += '<h5><span class="badge badge-success">' + a + '</span></h5>';
                   break;
                 default:
-                  string += '<span class="badge badge-primary">' + a + '</span>';
+                  string += '<h5><span class="badge badge-primary">' + a + '</span></h5>';
               }
             }
             return string;

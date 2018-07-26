@@ -3,14 +3,14 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-10">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
                   Dashboard {{ $title }}
                 </div>
                 <div class="card-body">
                       @if(in_array('manager', $roles))
-                      <table id="users-table" class="table">
+                      <table id="users-table" class="table table-striped table-bordered" style="width:100%">
                         <thead>
                           <th>id</th>
                           <th>name</th>
