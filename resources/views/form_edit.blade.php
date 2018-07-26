@@ -34,7 +34,8 @@
                                 <input type="checkbox" class="form-check-input" value="{{$role->id}}" name="roles[]"
                                 @if(in_array($role->name, $user['role']))
                                   checked
-                                @endif>
+                                @endif
+                                >
                                 <label class="form-check-label" for="exampleCheck1">{{$role->name}}</label>
                             </div>
                         @endforeach

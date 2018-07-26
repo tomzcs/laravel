@@ -62,7 +62,7 @@ public $successStatus = 200;
         $input = $request->all();
         $input['password'] = Hash::make($input['password']);
         $user = User::create($input);
-        $user->roles()->attach(Role::where('name', 'employee')->first());
+        $user->roles()->attach(Role::where('name', 'mobile')->first());
 
         $success['token'] =  $user->createToken('MyApp')-> accessToken;
         $success['name'] =  $user->name;
@@ -135,14 +135,15 @@ public $successStatus = 200;
 
     public function InsertVideo(Request $request)
     {
-      // print_r($_FILES);die();
-      // $parm = $request->all();
-      // $video = $parm['video'];
-      // $input = $video->getClientOriginalName();
-      // dd($input);
-      $destinationPath = public_path().'\uploads';
-      $video->move($destinationPath, $_FILES['file']['tmp_name']);
-      return response()->json(['status' => true,'message' => 'success','data' => $destinationPath],$this-> successStatus);
+      $parm = $request->all();
+      $file_data = $parm['video'];
+      $file_name = 'video_'.time().'.mp4'; //generating unique file name;
+      @list($type, $file_data) = explode(';', $file_data);
+      @list(, $file_data) = explode(',', $file_data);
+      if($file_data!=""){ // storing image in storage/app/public Folder
+             Storage::disk('public')->put($file_name,base64_decode($file_data));
+       }
+      return response()->json(['status' => true,'message' => 'success','data' => url('storage/'.$file_name)],$this-> successStatus);
 
     }
 

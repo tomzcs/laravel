@@ -21,3 +21,5 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/edit_form/{id}', 'HomeController@edit_form')->name('home');
 Route::post('/edit_save', 'HomeController@edit_save');
 Route::post('/video', 'HomeController@video');
+
+Route::get('/user_data', 'HomeController@userDataTable');

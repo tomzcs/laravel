@@ -3,16 +3,14 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-10">
             <div class="card">
                 <div class="card-header">
                   Dashboard {{ $title }}
                 </div>
 
                 <div class="card-body">
-                    @if($roles[0] == 'employee')
-                      You are employee
-                    @elseif($roles[0] == 'manager')
+                      @if(in_array('manager', $roles))
                       You are manager
                       <table class="table">
                         <thead>
@@ -34,6 +32,8 @@
                                   @foreach ($user['role'] as $role)
                                     @if($role == 'manager')
                                       <span class="badge badge-danger">{{ $role }}</span>
+                                    @elseif($role == 'mobile')
+                                      <span class="badge badge-success">{{ $role }}</span>
                                     @else
                                       <span class="badge badge-primary">{{ $role }}</span>
                                     @endif
@@ -50,17 +50,15 @@
                           @endforeach
                         </tbody>
                       </table>
+                    {{-- @elseif($roles[0] == 'employee')
+                      You are employee --}}
                     @endif
-                    <embed src="http://192.168.88.15/uploads/WIN_20180724_11_39_30_Pro.mp4">
-                    <form class="" action="video" method="post" enctype="multipart/form-data">
-                      @csrf
-                      <input type="file" name="video" value="">
-                      <button type="submit" name="button">ok</button>
-                    </form>
                 </div>
             </div>{{-- end card --}}
         </div>{{-- end col-8 --}}
-
     </div>
 </div>
+
 @endsection
+@push('scripts')
+@endpush

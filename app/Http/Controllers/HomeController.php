@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\User;
 use App\Role;
 use Illuminate\Support\Facades\DB;
-
+use Yajra\Datatables\Datatables;
 class HomeController extends Controller
 {
     /**
@@ -27,8 +27,6 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        // employee
-        $role = $request->user()->authorizeRoles(['employee']);
         $user = Auth::user();
         $roles = $request->user()->getRoles($user->id);
         $users = [];
@@ -39,12 +37,7 @@ class HomeController extends Controller
           $arr['role'] = $request->user()->getRoles($value['id']);
           array_push($users, $arr);
         }
-        if ($role) {
-          return view('home',['title' => 'employee','roles' => $roles]);
-        }else{
-          return view('home',['title' => 'manager', 'roles' => $roles, 'users' => $users]);
-        }
-
+        return view('home',['title' => 'manager', 'roles' => $roles, 'users' => $users]);
     }
 
     public function video(Request $request)
@@ -82,7 +75,6 @@ class HomeController extends Controller
       }
       User::where('id', $parm['id'])->update(['name' => $parm['name']]);
       return redirect('home');
-
 
     }
 }

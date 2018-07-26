@@ -25,7 +25,7 @@ Route::group(['middleware' => ['auth:api']], function(){
   Route::post('details', 'API\UserController@details')->middleware('check');
   Route::post('latlong', 'API\UserController@latlong');
   Route::post('insert_img', 'API\UserController@InsertImg');
-  Route::get('insert_video', 'API\UserController@InsertVideo');
+  Route::post('insert_video', 'API\UserController@InsertVideo');
   Route::get('air/{user}', 'API\UserController@Air');
 
 });
