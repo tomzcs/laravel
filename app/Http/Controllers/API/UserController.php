@@ -86,7 +86,7 @@ public $successStatus = 200;
     }
 
     //get image Base64
-    public function InsertImg(Request $request,ImageOptimizer $imageOptimizer)
+    public function InsertImg(Request $request)
     {
       $validator = Validator::make($request->all(), [
           'files' => 'required',
@@ -106,8 +106,6 @@ public $successStatus = 200;
       @list($type, $file_data) = explode(';', $file_data);
       @list(, $file_data) = explode(',', $file_data);
       if($file_data!=""){ // storing image in storage/app/public Folder
-            // optimize
-            $imageOptimizer->optimizeUploadedImageFile(base64_decode($file_data));
             Storage::disk('public')->put($file_name,base64_decode($file_data));
        }
       $data = [

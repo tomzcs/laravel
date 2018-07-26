@@ -152,7 +152,6 @@ return [
          */
          Laravel\Passport\PassportServiceProvider::class,
          Yajra\Datatables\DatatablesServiceProvider::class,
-         Approached\LaravelImageOptimizer\ServiceProvider::class,
         /*
          * Application Service Providers...
          */
